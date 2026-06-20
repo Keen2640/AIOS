@@ -1,55 +1,43 @@
-import os
-import subprocess
-import webbrowser
-import json
+from datetime import datetime
 
 # -------------------------
-# TOOL: run python code
+# Calculator
 # -------------------------
-def run_python(code: str):
+def calculator(expression):
     try:
-        exec_globals = {}
-        exec(code, exec_globals)
-        return {"status": "success", "output": "Code executed"}
+        return str(eval(expression))
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        return f"Calculator error: {e}"
 
 # -------------------------
-# TOOL: open apps / files
+# Reverse Text
 # -------------------------
-def open_app(app_name: str):
+def reverse_text(text):
+    return text[::-1]
+
+# -------------------------
+# Current Time
+# -------------------------
+def get_time():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+# -------------------------
+# Read File
+# -------------------------
+def file_reader(path):
     try:
-        subprocess.run(["open", "-a", app_name])
-        return {"status": "success", "app": app_name}
+        with open(path, "r") as f:
+            return f.read()
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        return f"Read error: {e}"
 
 # -------------------------
-# TOOL: web search
+# Write File
 # -------------------------
-def search_web(query: str):
-    url = f"https://www.google.com/search?q={query}"
-    webbrowser.open(url)
-    return {"status": "success", "query": query}
-
-# -------------------------
-# TOOL ROUTER
-# -------------------------
-def execute_tool(action: dict):
-    tool = action.get("action")
-    input_data = action.get("input")
-
-    if tool == "run_python":
-        return run_python(input_data)
-
-    elif tool == "open_app":
-        return open_app(input_data)
-
-    elif tool == "search_web":
-        return search_web(input_data)
-
-    elif tool == "general_response":
-        return {"status": "ok", "response": input_data}
-
-    else:
-        return {"status": "error", "message": "Unknown tool"}
+def file_writer(path, content):
+    try:
+        with open(path, "w") as f:
+            f.write(content)
+        return f"Saved to {path}"
+    except Exception as e:
+        return f"Write error: {e}"
