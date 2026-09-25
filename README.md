@@ -1,4 +1,4 @@
-# AIOS — AI Agent Operating System 🤖
+# AIOS — AI Agent Operating System 
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)]()
 [![License](https://img.shields.io/badge/License-MIT-green)]()
