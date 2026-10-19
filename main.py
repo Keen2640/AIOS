@@ -30,6 +30,25 @@ BANNER = """
 """
 
 
+# Actions that can change the machine's state and need explicit user approval.
+RISKY_ACTIONS = {"run_python", "open_app"}
+
+
+def confirm_action(action) -> bool:
+    """Ask the user to approve a risky action before it runs."""
+    if action.action not in RISKY_ACTIONS:
+        return True
+    if action.action == "run_python":
+        print("---- code to be executed ----")
+        print(action.params.get("code", ""))
+        print("-----------------------------")
+    try:
+        answer = input(f"Run '{action.action}'? [y/N] ").strip().lower()
+    except (EOFError, KeyboardInterrupt):
+        return False
+    return answer in {"y", "yes"}
+
+
 def run_repl() -> None:
     load_dotenv()
 
@@ -65,6 +84,11 @@ def run_repl() -> None:
         print(f"[planned] action={action.action} params={action.params}")
         if action.reasoning:
             print(f"[reasoning] {action.reasoning}")
+
+        if not confirm_action(action):
+            print("[⏭️ skipped] Action cancelled by user.")
+            logger.info("User declined action=%s", action.action)
+            continue
 
         result = router.dispatch(action)
 
