@@ -11,25 +11,26 @@ Think of it as a minimal, from-scratch version of the orchestration layer behind
 
 ---
 
-## 📌 Why I Built This
+## Why I Built This
 
 Most LLM demos stop at "chat with a model." AIOS goes further: it explores the systems-level problem of letting a language model **safely and reliably control a real computer** — parsing ambiguous natural language into deterministic, typed actions, validating those actions before execution, and handling failure gracefully. It's a hands-on deep-dive into agentic AI architecture, structured output generation, sandboxing, and tool-use design patterns that underpin modern AI agent frameworks.
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Natural language → structured action parsing** — converts free-form user input into validated JSON actions using constrained/structured output from an LLM (Gemini 2.5 Flash)
 - **Real tool execution**, not simulated: runs Python code, opens native macOS applications, and performs web search/browser automation
 - **Modular tool-router architecture** — each tool is a self-contained, independently testable module registered with the router, so adding a new capability doesn't touch core logic
 - **Schema validation layer** — every LLM-generated action is validated against a strict JSON schema before execution, rejecting malformed or unsafe actions
 - **Safe fallback handling** — a `general_response` path catches ambiguous, unsupported, or unsafe requests instead of forcing a tool call
+- **Human-in-the-loop approval** — risky actions (`run_python`, `open_app`) show exactly what will run and require a `y` confirmation first
 - **Execution logging** — every parsed action, validation result, and execution outcome is logged for debugging and auditability
 - **Extensible by design** — new tools can be added by implementing a single interface and registering with the router, no changes to the parsing or execution layers required
 
 ---
 
-## 🧠 Architecture
+## Architecture
 
 ```
 ┌─────────────┐
@@ -67,18 +68,18 @@ Most LLM demos stop at "chat with a model." AIOS goes further: it explores the s
 
 ---
 
-## ⚙️ Supported Tools
+## Supported Tools
 
 | Tool | Description |
 |---|---|
-| `run_python` | Executes Python code in a controlled subprocess and captures stdout/stderr |
+| `run_python` | Executes Python code in a subprocess with a timeout (requires user confirmation before running) |
 | `open_app` | Opens native macOS applications via system calls |
 | `search_web` | Performs web search / browser automation for information retrieval |
 | `general_response` | Safe fallback for conversational, ambiguous, or unsupported requests |
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Language:** Python 3.10+
 - **LLM:** Google Gemini 2.5 Flash (via API)
@@ -86,7 +87,7 @@ Most LLM demos stop at "chat with a model." AIOS goes further: it explores the s
 
 ---
 
-## 📦 Setup
+## Setup
 
 ```bash
 git clone https://github.com/yourusername/AIOS.git
@@ -112,7 +113,7 @@ python main.py
 
 ---
 
-## 💡 Example Usage
+## Example Usage
 
 ```
 > Open VS Code and search the web for "Python asyncio tutorial"
@@ -125,7 +126,7 @@ python main.py
 
 ---
 
-## 🔒 Safety & Guardrails
+## Safety & Guardrails
 
 - All LLM-generated actions are validated against a strict schema before execution — no raw model output is ever executed directly
 - Python execution runs in an isolated subprocess with output capture, not `eval()`
@@ -134,11 +135,11 @@ python main.py
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [ ] **Memory layer** — persistent context across sessions (vector store for long-term agent memory)
 - [ ] **Multi-step planning** — decompose complex requests into an ordered sequence of tool calls instead of single-action turns
-- [ ] **Permission system** — per-tool user confirmation before executing sensitive actions (file writes, app control)
+- [x] **Permission system** — per-tool user confirmation before executing sensitive actions (file writes, app control)
 - [ ] **Plugin marketplace** — drop-in third-party tool modules with a standardized manifest
 - [ ] **Cross-platform support** — extend `open_app` and system tools beyond macOS to Windows/Linux
 - [ ] **Local LLM support** — swap in local models (Llama, Mistral) via a pluggable model interface
@@ -147,7 +148,7 @@ python main.py
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 pytest tests/
@@ -157,18 +158,18 @@ pytest tests/
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, issues, and feature requests are welcome. Feel free to check the [issues page](https://github.com/yourusername/AIOS/issues) or open a PR.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👤 Author
+## Author
 
 **[Aniketh Sriramoju]**
