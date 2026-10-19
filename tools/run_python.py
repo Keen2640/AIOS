@@ -26,7 +26,10 @@ class RunPythonTool(Tool):
 
     def run(self, params: Dict[str, Any]) -> ToolResult:
         code = params.get("code", "")
-        timeout = params.get("timeout", DEFAULT_TIMEOUT_SECONDS)
+        try:
+            timeout = min(float(params.get("timeout", DEFAULT_TIMEOUT_SECONDS)), 30)
+        except (TypeError, ValueError):
+            timeout = DEFAULT_TIMEOUT_SECONDS
 
         if not code.strip():
             return ToolResult(success=False, output="", error="No code provided.")
